@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom";
 
 const Header = () => {
 	return (
-		<header className="black mb5 pt5">
+		<header className="black mb4 pt5">
 			<h1 className="ttu f3 tracked-mega anton tc mt0 mb3">Marmalade.fm</h1>
 			<ul className="flex list justify-center pl0">
 				<li className="mh2">

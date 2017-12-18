@@ -7,6 +7,7 @@ import Header from "./Header";
 import Home from "./Home";
 import Archive from "./Archive";
 import About from "./About";
+import Show from "./Show";
 
 // Import mix data
 import mixesData from "../data/mixes";
@@ -117,6 +118,10 @@ class App extends Component {
 							/>
 							<Route path="/archive" render={() => <Archive {...this.actions} {...this.state} />} />
 							<Route path="/about" render={() => <About {...this.state} />} />
+							<Route
+								path="/show/:slug"
+								render={routeParams => <Show {...routeParams} {...this.state} />}
+							/>
 						</div>
 					</div>
 					<iframe
