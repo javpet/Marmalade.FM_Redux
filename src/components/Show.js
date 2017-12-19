@@ -1,44 +1,57 @@
 import React from "react";
 import Stat from "./Stat";
 
-class Show extends React.Component {
-	constructor(props) {
-		super(props);
+// Import Redux
+import { connect } from "react-redux";
 
-		this.state = {
-			mix: {}
-		};
-	}
+// Importing date-fns
+import differenceInDays from "date-fns/difference_in_days";
 
-	// We grab the mix that has a slug that matches our params from the url
-	// componentWillReceiveProps runs every time the component receives new nextProps rather than just one like componentDidMount
-	componentWillReceiveProps(nextProps) {
-		const mixes = nextProps.mixes;
-		const [firstMix = {}] = mixes.filter(mix => mix.slug === this.props.match.params.slug);
+const Tag = ({ name, url }) => {
+	return (
+		<div className="mr2 b2 o-70">
+			<a className="block f6 link blue b ba bw1 b--blue br2 pv1 ph2 lh-title" href={url} target="_blank">
+				{name}
+			</a>
+		</div>
+	);
+};
 
-		if (firstMix) {
-			this.setState({
-				mix: firstMix
-			});
-		}
-	}
+const Tags = ({ tags = [] }) => {
+	return (
+		<div className="tags flex flex-wrap">
+			{tags.map(tag => {
+				return <Tag {...tag} />;
+			})}
+		</div>
+	);
+};
 
-	render() {
-		const { match } = this.props;
-		const { mix } = this.state;
-		return (
-			<div className="ph3 ph4-l pad-bottom">
-				<div className="measure center lh-copy">
-					<p>{mix.description}</p>
-					<Stat statName="Plays..." statNumber={mix.play_count} statWord="times" />
+const Show = ({ mix }) => {
+	return (
+		<div className="ph3 ph4-l pad-bottom">
+			<div className="measure center lh-copy">
+				<Tags tags={mix.tags} />
+				<p>{mix.description}</p>
+				<Stat statName="Plays..." statNumber={mix.play_count} statWord="times" />
 
-					<Stat statName="Uploaded..." statNumber={mix.created_time} statWord="days ago" />
+				<Stat
+					statName="Uploaded..."
+					statNumber={differenceInDays(new Date(), mix.created_time)}
+					statWord="days ago"
+				/>
 
-					<Stat statName="Lasting for..." statNumber={mix.audio_length / 60} statWord="minutes" />
-				</div>
+				<Stat statName="Lasting for..." statNumber={mix.audio_length / 60} statWord="minutes" />
 			</div>
-		);
-	}
-}
+		</div>
+	);
+};
 
-export default Show;
+const getMix = (mixes, slug) => {
+	const [mix = {}] = mixes.filter(mix => mix.slug === slug);
+	return mix;
+};
+
+export default connect((state, props) => ({
+	mix: getMix(state.mixes, props.match.params.slug)
+}))(Show);
